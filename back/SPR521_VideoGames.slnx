@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="SPR521_VideoGames.BLL/SPR521_VideoGames.BLL.csproj" />
+  <Project Path="SPR521_VideoGames.DAL/SPR521_VideoGames.DAL.csproj" />
+  <Project Path="SPR521_VideoGames/SPR521_VideoGames.csproj" />
+</Solution>

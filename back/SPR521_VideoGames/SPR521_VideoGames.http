@@ -1,0 +1,6 @@
+@SPR521_VideoGames_HostAddress = http://localhost:5027
+
+GET {{SPR521_VideoGames_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
