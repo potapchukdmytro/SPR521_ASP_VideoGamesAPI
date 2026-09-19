@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SPR521_VideoGames.DAL;
 using SPR521_VideoGames.DAL.Entities;
 using SPR521_VideoGames.DAL.Repositories;
 
@@ -18,11 +17,20 @@ namespace SPR521_VideoGames.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAsync(CancellationToken ct = default)
+        public async Task<IActionResult> GetAsync([FromQuery]int page = 1, [FromQuery]int pageSize = 20, CancellationToken ct = default)
         {
+            int total = await _gameRepository.GetAll().CountAsync();
+            int pages = (int)Math.Ceiling((double)total / pageSize);
+
+            page = page < 1 || page > pages ? 1 : page;
+            pageSize = pageSize < 1 ? 20 : pageSize;
+
             var games = await _gameRepository
                 .GetAll()
                 .Include(g => g.Developer)
+                .OrderBy(g => g.Id)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync(ct);
 
             var dtos = games.Select(g => new GameDto
