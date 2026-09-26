@@ -11,5 +11,12 @@ namespace SPR521_VideoGames.DAL.Repositories
         {
             _context = context;
         }
+
+        public IQueryable<Game> Games => GetAll();
+
+        public async Task LoadDeveloperAsync(Game game, CancellationToken ct = default)
+        {
+            await _context.Entry(game).Reference(g => g.Developer).LoadAsync(ct);
+        }
     }
 }

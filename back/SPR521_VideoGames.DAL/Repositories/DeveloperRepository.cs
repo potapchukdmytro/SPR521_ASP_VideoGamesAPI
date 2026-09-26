@@ -13,9 +13,11 @@ namespace SPR521_VideoGames.DAL.Repositories
             _context = context;
         }
 
+        public IQueryable<Developer> Developers => GetAll();
+
         public async Task<bool> IsExistAsync(int id, CancellationToken ct = default)
         {
-            return await GetAll().AnyAsync(d => d.Id == id, ct);
+            return await Developers.AnyAsync(d => d.Id == id, ct);
         }
     }
 }

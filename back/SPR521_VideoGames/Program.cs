@@ -1,7 +1,11 @@
+using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Scalar.AspNetCore;
 using SPR521_VideoGames.BLL.Services;
+using SPR521_VideoGames.BLL.Tools;
+using SPR521_VideoGames.BLL.Validators.Game;
 using SPR521_VideoGames.DAL;
 using SPR521_VideoGames.DAL.Initializer;
 using SPR521_VideoGames.DAL.Repositories;
@@ -35,6 +39,16 @@ builder.Services.AddScoped<DeveloperRepository>();
 // Add services
 builder.Services.AddScoped<GameService>();
 builder.Services.AddScoped<FileService>();
+builder.Services.AddScoped<PaginateCollection>();
+
+// Disable default validation
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+});
+
+// Add fluent validation
+builder.Services.AddValidatorsFromAssemblyContaining<CreateGameValidator>();
 
 var app = builder.Build();
 

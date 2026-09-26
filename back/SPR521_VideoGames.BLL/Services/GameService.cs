@@ -4,6 +4,7 @@ using SPR521_VideoGames.BLL.Dtos;
 using SPR521_VideoGames.BLL.Dtos.Game;
 using SPR521_VideoGames.BLL.Dtos.GameDto;
 using SPR521_VideoGames.BLL.Dtos.Pagination;
+using SPR521_VideoGames.BLL.Tools;
 using SPR521_VideoGames.DAL;
 using SPR521_VideoGames.DAL.Entities;
 using SPR521_VideoGames.DAL.Repositories;
@@ -15,36 +16,38 @@ namespace SPR521_VideoGames.BLL.Services
         private readonly DeveloperRepository _developerRepository;
         private readonly GameRepository _gameRepository;
         private readonly FileService _fileService;
+        private readonly PaginateCollection _paginateCollection;
         private readonly IMapper _mapper;
 
-        public GameService(GameRepository gameRepository, IMapper mapper, FileService fileService, DeveloperRepository developerRepository)
+        public GameService(GameRepository gameRepository, IMapper mapper, FileService fileService, DeveloperRepository developerRepository, PaginateCollection paginateCollection)
         {
             _gameRepository = gameRepository;
             _mapper = mapper;
             _fileService = fileService;
             _developerRepository = developerRepository;
+            _paginateCollection = paginateCollection;
         }
 
         public async Task<ResponseDto> GetAllAsync(PaginationRequestDto dto, CancellationToken ct = default)
         {
-            int pageSize = dto.PageSize < 1 ? 20 : dto.PageSize;
-
-            int total = await _gameRepository.GetAll().CountAsync();
-            int pages = (int)Math.Ceiling((double)total / dto.PageSize);
-
-            int page = dto.Page < 1 || dto.Page > pages ? 1 : dto.Page;
-
-            var entities = await _gameRepository
-                .GetAll()
+            var query = _gameRepository.Games
                 .Include(g => g.Developer)
-                .OrderBy(g => g.Id)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync(ct);
+                .OrderBy(g => g.Id);
 
-            var dtos = _mapper.Map<List<GameDto>>(entities);
+            var result = await _paginateCollection.PaginateAsync(query, dto, ct);
 
-            return ResponseDto.Success("Ігри отримано", dtos);
+            var dtos = _mapper.Map<List<GameDto>>(result.Items);
+
+            var paginationResponseDto = new PaginationResponseDto<GameDto>
+            {
+                Page = result.Page,
+                PageSize = result.PageSize,
+                PageCount = result.PageCount,
+                Total = result.Total,
+                Items = dtos
+            };
+
+            return ResponseDto.Success("Ігри отримано", paginationResponseDto);
         }
 
         public async Task<ResponseDto> GetByIdAsync(int id, CancellationToken ct = default)
@@ -62,14 +65,6 @@ namespace SPR521_VideoGames.BLL.Services
 
         public async Task<ResponseDto> CreateAsync(CreateGameDto dto, string imagesFolder, CancellationToken ct = default)
         {
-            var developer = await _developerRepository.GetAll()
-                .FirstOrDefaultAsync(d => d.Id == dto.DeveloperId, ct);
-
-            if (developer == null)
-            {
-                return ResponseDto.Error($"Розробник з id '{dto.DeveloperId}' не знайдений");
-            }
-
             var entity = _mapper.Map<Game>(dto);
 
             // Save image
@@ -79,6 +74,8 @@ namespace SPR521_VideoGames.BLL.Services
             }
 
             await _gameRepository.CreateAsync(entity, ct);
+
+            await _gameRepository.LoadDeveloperAsync(entity, ct);
 
             return ResponseDto.Success("Гру додано", _mapper.Map<GameDto>(entity));
         }

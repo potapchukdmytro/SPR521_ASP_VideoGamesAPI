@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
 using SPR521_VideoGames.BLL.Dtos.Game;
 using SPR521_VideoGames.BLL.Dtos.Pagination;
 using SPR521_VideoGames.BLL.Services;
@@ -13,10 +14,14 @@ namespace SPR521_VideoGames.Controllers
     {
         private readonly GameService _gameService;
         private readonly string _imagesFolder;
+        private readonly IValidator<CreateGameDto> _valiatorCreate;
+        private readonly IValidator<UpdateGameDto> _valiatorUpdate;
 
-        public GameController(GameService gameService, IWebHostEnvironment webHostEnvironment)
+        public GameController(GameService gameService, IWebHostEnvironment webHostEnvironment, IValidator<CreateGameDto> valiator, IValidator<UpdateGameDto> valiatorUpdate)
         {
             _gameService = gameService;
+            _valiatorCreate = valiator;
+            _valiatorUpdate = valiatorUpdate;
 
             string root = webHostEnvironment.ContentRootPath;
             _imagesFolder = Path.Combine(root, FileSettings.Games);
@@ -39,6 +44,13 @@ namespace SPR521_VideoGames.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromForm] CreateGameDto dto, CancellationToken ct = default)
         {
+            var validationResult = await _valiatorCreate.ValidateAsync(dto, ct);
+
+            if(!validationResult.IsValid)
+            {
+                return this.ValidationResponse(validationResult);
+            }
+
             var response = await _gameService.CreateAsync(dto, _imagesFolder, ct);
             return this.GetHttpResponse(response);
         }
@@ -46,6 +58,13 @@ namespace SPR521_VideoGames.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateAsync([FromForm] UpdateGameDto dto, CancellationToken ct = default)
         {
+            var validationResult = await _valiatorUpdate.ValidateAsync(dto, ct);
+
+            if (!validationResult.IsValid)
+            {
+                return this.ValidationResponse(validationResult);
+            }
+
             var response = await _gameService.UpdateAsync(dto, _imagesFolder, ct);
             return this.GetHttpResponse(response);
         }

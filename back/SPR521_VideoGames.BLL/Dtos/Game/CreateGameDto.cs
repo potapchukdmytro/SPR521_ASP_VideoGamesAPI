@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
-using SPR521_VideoGames.DAL.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace SPR521_VideoGames.BLL.Dtos.Game
 {
