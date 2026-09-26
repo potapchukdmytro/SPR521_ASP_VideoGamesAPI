@@ -1,11 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using SPR521_VideoGames.BLL.Dtos.Game;
-using SPR521_VideoGames.BLL.Dtos.GameDto;
 using SPR521_VideoGames.BLL.Dtos.Pagination;
 using SPR521_VideoGames.BLL.Services;
-using SPR521_VideoGames.DAL.Entities;
-using SPR521_VideoGames.DAL.Repositories;
 using SPR521_VideoGames.Extensions;
 
 namespace SPR521_VideoGames.Controllers
@@ -14,12 +10,10 @@ namespace SPR521_VideoGames.Controllers
     [Route("api/game")]
     public class GameController : ControllerBase
     {
-        private readonly GameRepository _gameRepository;
         private readonly GameService _gameService;
 
-        public GameController(GameRepository gameRepository, GameService gameService)
+        public GameController(GameService gameService)
         {
-            _gameRepository = gameRepository;
             _gameService = gameService;
         }
 
@@ -33,16 +27,8 @@ namespace SPR521_VideoGames.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetByIdAsync([FromRoute] int id, CancellationToken ct = default)
         {
-            var game = await _gameRepository.GetByIdAsync(id, ct);
-
-            if(game != null)
-            {
-                return Ok(game);
-            }
-            else
-            {
-                return NotFound($"Не вдалося знайти книгу з id '{id}'");
-            }
+            var response = await _gameService.GetByIdAsync(id, ct);
+            return this.GetHttpResponse(response);
         }
 
         [HttpPost]
@@ -53,21 +39,17 @@ namespace SPR521_VideoGames.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateAsync([FromBody] Game game, CancellationToken ct = default)
+        public async Task<IActionResult> UpdateAsync([FromBody] UpdateGameDto dto, CancellationToken ct = default)
         {
-            game.ReleaseDate = game.ReleaseDate.ToUniversalTime();
-            await _gameRepository.UpdateAsync(game, ct);
-
-            return Ok("Гру додано");
+            var response = await _gameService.UpdateAsync(dto, ct);
+            return this.GetHttpResponse(response);
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> DeleteAsync([FromBody] Game game, CancellationToken ct = default)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAsync([FromRoute] int id, CancellationToken ct = default)
         {
-            game.ReleaseDate = game.ReleaseDate.ToUniversalTime();
-            await _gameRepository.DeleteAsync(game, ct);
-
-            return Ok("Гру додано");
+            var response = await _gameService.DeleteAsync(id, ct);
+            return this.GetHttpResponse(response);
         }
     }
 }

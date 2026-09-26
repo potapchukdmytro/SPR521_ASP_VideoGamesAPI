@@ -45,12 +45,25 @@ namespace SPR521_VideoGames.BLL.Services
             return ResponseDto.Success("Ігри отримано", dtos);
         }
 
+        public async Task<ResponseDto> GetByIdAsync(int id, CancellationToken ct = default)
+        {
+            var entity = await _gameRepository.GetByIdAsync(id, ct);
+
+            if(entity == null)
+            {
+                return ResponseDto.Error($"Гра з id '{id}' не знайдена");
+            }
+
+            var dto = _mapper.Map<GameDto>(entity);
+            return ResponseDto.Success("Гру отримано", dto);
+        }
+
         public async Task<ResponseDto> CreateAsync(CreateGameDto dto, CancellationToken ct = default)
         {
-            bool isDeveloper = await _context.Developers
-                .AnyAsync(d => d.Id == dto.DeveloperId, ct);
+            var developer = await _context.Developers
+                .FirstOrDefaultAsync(d => d.Id == dto.DeveloperId, ct);
 
-            if(!isDeveloper)
+            if (developer == null)
             {
                 return ResponseDto.Error($"Розробник з id '{dto.DeveloperId}' не знайдений");
             }
@@ -59,7 +72,45 @@ namespace SPR521_VideoGames.BLL.Services
 
             await _gameRepository.CreateAsync(entity, ct);
 
-            return ResponseDto.Success("Гру додано");
+            return ResponseDto.Success("Гру додано", _mapper.Map<GameDto>(entity));
+        }
+
+        public async Task<ResponseDto> DeleteAsync(int id, CancellationToken ct = default)
+        {
+            var entity = await _gameRepository.GetByIdAsync(id, ct);
+
+            if (entity == null)
+            {
+                return ResponseDto.Error($"Гра з id '{id}' не знайдена");
+            }
+
+            await _gameRepository.DeleteAsync(id, ct);
+
+            return ResponseDto.Success("Гру видалено");
+        }
+
+        public async Task<ResponseDto> UpdateAsync(UpdateGameDto dto, CancellationToken ct = default)
+        {
+            var entity = await _gameRepository.GetByIdAsync(dto.Id, ct);
+
+            if (entity == null)
+            {
+                return ResponseDto.Error($"Гра з id '{dto.Id}' не знайдена");
+            }
+
+            var developer = await _context.Developers
+                .FirstOrDefaultAsync(d => d.Id == dto.DeveloperId, ct);
+
+            if (developer == null)
+            {
+                return ResponseDto.Error($"Розробник з id '{dto.DeveloperId}' не знайдений");
+            }
+
+            _mapper.Map(dto, entity);
+
+            await _gameRepository.UpdateAsync(entity, ct);
+
+            return ResponseDto.Success("Дані про гру оновлено", _mapper.Map<GameDto>(entity));
         }
     }
 }

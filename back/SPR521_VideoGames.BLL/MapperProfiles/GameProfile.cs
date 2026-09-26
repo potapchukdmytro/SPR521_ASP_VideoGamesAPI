@@ -15,6 +15,9 @@ namespace SPR521_VideoGames.BLL.MapperProfiles
 
             // CreateGameDto -> Game
             CreateMap<CreateGameDto, Game>();
+
+            // UpdateGameDto -> Game
+            CreateMap<UpdateGameDto, Game>();
         }
     }
 }
