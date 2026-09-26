@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Scalar.AspNetCore;
 using SPR521_VideoGames.BLL.Services;
 using SPR521_VideoGames.DAL;
@@ -29,9 +30,11 @@ builder.Services.AddAutoMapper(cfg =>
 
 // Add repositories
 builder.Services.AddScoped<GameRepository>();
+builder.Services.AddScoped<DeveloperRepository>();
 
 // Add services
 builder.Services.AddScoped<GameService>();
+builder.Services.AddScoped<FileService>();
 
 var app = builder.Build();
 
@@ -46,6 +49,27 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Static files
+string storagePath = Path.Combine(builder.Environment.ContentRootPath, "FileStorage");
+
+if(!Directory.Exists(storagePath))
+{
+    Directory.CreateDirectory(storagePath);
+}
+
+string imagesPath = Path.Combine(storagePath, "images");
+
+if (!Directory.Exists(imagesPath))
+{
+    Directory.CreateDirectory(imagesPath);
+}
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    RequestPath = "/images",
+    FileProvider = new PhysicalFileProvider(imagesPath)
+});
 
 app.UseAuthorization();
 

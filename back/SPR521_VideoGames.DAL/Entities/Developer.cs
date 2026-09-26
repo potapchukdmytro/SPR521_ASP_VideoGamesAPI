@@ -1,8 +1,7 @@
 ﻿namespace SPR521_VideoGames.DAL.Entities
 {
-    public class Developer
+    public class Developer : BaseEntity
     {
-        public int Id { get; set; }
         public required string Name { get; set; }
         public string? Country { get; set; }
         public int Year { get; set; }

@@ -3,6 +3,7 @@ using SPR521_VideoGames.BLL.Dtos.Game;
 using SPR521_VideoGames.BLL.Dtos.Pagination;
 using SPR521_VideoGames.BLL.Services;
 using SPR521_VideoGames.Extensions;
+using SPR521_VideoGames.Settings;
 
 namespace SPR521_VideoGames.Controllers
 {
@@ -11,10 +12,14 @@ namespace SPR521_VideoGames.Controllers
     public class GameController : ControllerBase
     {
         private readonly GameService _gameService;
+        private readonly string _imagesFolder;
 
-        public GameController(GameService gameService)
+        public GameController(GameService gameService, IWebHostEnvironment webHostEnvironment)
         {
             _gameService = gameService;
+
+            string root = webHostEnvironment.ContentRootPath;
+            _imagesFolder = Path.Combine(root, FileSettings.Games);
         }
 
         [HttpGet]
@@ -32,23 +37,23 @@ namespace SPR521_VideoGames.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync([FromBody] CreateGameDto dto, CancellationToken ct = default)
+        public async Task<IActionResult> CreateAsync([FromForm] CreateGameDto dto, CancellationToken ct = default)
         {
-            var response = await _gameService.CreateAsync(dto, ct);
+            var response = await _gameService.CreateAsync(dto, _imagesFolder, ct);
             return this.GetHttpResponse(response);
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateAsync([FromBody] UpdateGameDto dto, CancellationToken ct = default)
+        public async Task<IActionResult> UpdateAsync([FromForm] UpdateGameDto dto, CancellationToken ct = default)
         {
-            var response = await _gameService.UpdateAsync(dto, ct);
+            var response = await _gameService.UpdateAsync(dto, _imagesFolder, ct);
             return this.GetHttpResponse(response);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync([FromRoute] int id, CancellationToken ct = default)
         {
-            var response = await _gameService.DeleteAsync(id, ct);
+            var response = await _gameService.DeleteAsync(id, _imagesFolder, ct);
             return this.GetHttpResponse(response);
         }
     }

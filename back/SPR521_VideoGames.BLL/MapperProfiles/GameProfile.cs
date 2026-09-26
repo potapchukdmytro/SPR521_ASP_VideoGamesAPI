@@ -14,10 +14,12 @@ namespace SPR521_VideoGames.BLL.MapperProfiles
                 .ForMember(dest => dest.Developer, opt => opt.MapFrom(src => src.Developer!.Name));
 
             // CreateGameDto -> Game
-            CreateMap<CreateGameDto, Game>();
+            CreateMap<CreateGameDto, Game>()
+                .ForMember(dest => dest.Image, opt => opt.Ignore());
 
             // UpdateGameDto -> Game
-            CreateMap<UpdateGameDto, Game>();
+            CreateMap<UpdateGameDto, Game>()
+                .ForMember(dest => dest.Image, opt => opt.Ignore());
         }
     }
 }

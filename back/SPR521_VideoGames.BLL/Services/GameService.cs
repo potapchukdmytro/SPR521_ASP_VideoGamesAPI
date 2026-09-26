@@ -12,15 +12,17 @@ namespace SPR521_VideoGames.BLL.Services
 {
     public class GameService
     {
-        private readonly AppDbContext _context;
+        private readonly DeveloperRepository _developerRepository;
         private readonly GameRepository _gameRepository;
+        private readonly FileService _fileService;
         private readonly IMapper _mapper;
 
-        public GameService(GameRepository gameRepository, AppDbContext context, IMapper mapper)
+        public GameService(GameRepository gameRepository, IMapper mapper, FileService fileService, DeveloperRepository developerRepository)
         {
             _gameRepository = gameRepository;
-            _context = context;
             _mapper = mapper;
+            _fileService = fileService;
+            _developerRepository = developerRepository;
         }
 
         public async Task<ResponseDto> GetAllAsync(PaginationRequestDto dto, CancellationToken ct = default)
@@ -58,9 +60,9 @@ namespace SPR521_VideoGames.BLL.Services
             return ResponseDto.Success("Гру отримано", dto);
         }
 
-        public async Task<ResponseDto> CreateAsync(CreateGameDto dto, CancellationToken ct = default)
+        public async Task<ResponseDto> CreateAsync(CreateGameDto dto, string imagesFolder, CancellationToken ct = default)
         {
-            var developer = await _context.Developers
+            var developer = await _developerRepository.GetAll()
                 .FirstOrDefaultAsync(d => d.Id == dto.DeveloperId, ct);
 
             if (developer == null)
@@ -70,12 +72,18 @@ namespace SPR521_VideoGames.BLL.Services
 
             var entity = _mapper.Map<Game>(dto);
 
+            // Save image
+            if(dto.Image != null)
+            {
+                entity.Image = await  _fileService.SaveImageAsync(dto.Image, imagesFolder, ct);
+            }
+
             await _gameRepository.CreateAsync(entity, ct);
 
             return ResponseDto.Success("Гру додано", _mapper.Map<GameDto>(entity));
         }
 
-        public async Task<ResponseDto> DeleteAsync(int id, CancellationToken ct = default)
+        public async Task<ResponseDto> DeleteAsync(int id, string imagesFolder, CancellationToken ct = default)
         {
             var entity = await _gameRepository.GetByIdAsync(id, ct);
 
@@ -84,12 +92,17 @@ namespace SPR521_VideoGames.BLL.Services
                 return ResponseDto.Error($"Гра з id '{id}' не знайдена");
             }
 
+            if(!string.IsNullOrEmpty(entity.Image))
+            {
+                _fileService.DeleteFile(Path.Combine(imagesFolder, entity.Image));
+            }
+
             await _gameRepository.DeleteAsync(id, ct);
 
             return ResponseDto.Success("Гру видалено");
         }
 
-        public async Task<ResponseDto> UpdateAsync(UpdateGameDto dto, CancellationToken ct = default)
+        public async Task<ResponseDto> UpdateAsync(UpdateGameDto dto, string imagesFolder, CancellationToken ct = default)
         {
             var entity = await _gameRepository.GetByIdAsync(dto.Id, ct);
 
@@ -98,7 +111,7 @@ namespace SPR521_VideoGames.BLL.Services
                 return ResponseDto.Error($"Гра з id '{dto.Id}' не знайдена");
             }
 
-            var developer = await _context.Developers
+            var developer = await _developerRepository.GetAll()
                 .FirstOrDefaultAsync(d => d.Id == dto.DeveloperId, ct);
 
             if (developer == null)
@@ -107,6 +120,17 @@ namespace SPR521_VideoGames.BLL.Services
             }
 
             _mapper.Map(dto, entity);
+
+            // Save image
+            if(dto.Image != null)
+            {
+                if(!string.IsNullOrEmpty(entity.Image))
+                {
+                    _fileService.DeleteFile(Path.Combine(imagesFolder, entity.Image));
+                }
+
+                entity.Image = await _fileService.SaveImageAsync(dto.Image, imagesFolder, ct);
+            }
 
             await _gameRepository.UpdateAsync(entity, ct);
 

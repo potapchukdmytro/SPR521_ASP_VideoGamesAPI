@@ -1,8 +1,7 @@
 ﻿namespace SPR521_VideoGames.DAL.Entities
 {
-    public class Game
+    public class Game : BaseEntity
     {
-        public int Id { get; set; }
         public required string Name { get; set; }
         public DateTime ReleaseDate { get; set; }
         public string? Description { get; set; }

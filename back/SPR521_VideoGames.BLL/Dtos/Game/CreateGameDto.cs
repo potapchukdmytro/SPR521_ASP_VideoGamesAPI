@@ -1,4 +1,5 @@
-﻿using SPR521_VideoGames.DAL.Entities;
+﻿using Microsoft.AspNetCore.Http;
+using SPR521_VideoGames.DAL.Entities;
 
 namespace SPR521_VideoGames.BLL.Dtos.Game
 {
@@ -7,7 +8,7 @@ namespace SPR521_VideoGames.BLL.Dtos.Game
         public string Name { get; set; } = string.Empty;
         public DateTime ReleaseDate { get; set; }
         public string? Description { get; set; }
-        public string? Image { get; set; }
+        public IFormFile? Image { get; set; }
         public string? Genre { get; set; }
         public decimal Price { get; set; }
         public float Rating { get; set; }
