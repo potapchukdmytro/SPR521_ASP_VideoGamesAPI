@@ -1,7 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SPR521_VideoGames.BLL.Dtos.Game;
+using SPR521_VideoGames.BLL.Dtos.GameDto;
+using SPR521_VideoGames.BLL.Dtos.Pagination;
+using SPR521_VideoGames.BLL.Services;
 using SPR521_VideoGames.DAL.Entities;
 using SPR521_VideoGames.DAL.Repositories;
+using SPR521_VideoGames.Extensions;
 
 namespace SPR521_VideoGames.Controllers
 {
@@ -10,42 +15,19 @@ namespace SPR521_VideoGames.Controllers
     public class GameController : ControllerBase
     {
         private readonly GameRepository _gameRepository;
+        private readonly GameService _gameService;
 
-        public GameController(GameRepository gameRepository)
+        public GameController(GameRepository gameRepository, GameService gameService)
         {
             _gameRepository = gameRepository;
+            _gameService = gameService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAsync([FromQuery]int page = 1, [FromQuery]int pageSize = 20, CancellationToken ct = default)
+        public async Task<IActionResult> GetAsync([FromQuery] PaginationRequestDto dto, CancellationToken ct = default)
         {
-            int total = await _gameRepository.GetAll().CountAsync();
-            int pages = (int)Math.Ceiling((double)total / pageSize);
-
-            page = page < 1 || page > pages ? 1 : page;
-            pageSize = pageSize < 1 ? 20 : pageSize;
-
-            var games = await _gameRepository
-                .GetAll()
-                .Include(g => g.Developer)
-                .OrderBy(g => g.Id)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync(ct);
-
-            var dtos = games.Select(g => new GameDto
-            {
-                Id = g.Id,
-                Description = g.Description,
-                Rating = g.Rating,
-                Developer = g.Developer!.Name,
-                Genre = g.Genre,
-                Name = g.Name,
-                Price = g.Price,
-                ReleaseDate = g.ReleaseDate
-            });
-
-            return Ok(dtos);
+            var response = await _gameService.GetAllAsync(dto, ct);
+            return this.GetHttpResponse(response);
         }
 
         [HttpGet("{id}")]
@@ -64,12 +46,10 @@ namespace SPR521_VideoGames.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync([FromBody] Game game, CancellationToken ct = default)
+        public async Task<IActionResult> CreateAsync([FromBody] CreateGameDto dto, CancellationToken ct = default)
         {
-            game.ReleaseDate = game.ReleaseDate.ToUniversalTime();
-            await _gameRepository.CreateAsync(game, ct);
-
-            return Ok("Гру додано");
+            var response = await _gameService.CreateAsync(dto, ct);
+            return this.GetHttpResponse(response);
         }
 
         [HttpPut]

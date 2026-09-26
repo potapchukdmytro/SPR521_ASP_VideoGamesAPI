@@ -1,16 +1,16 @@
 ﻿using SPR521_VideoGames.DAL.Entities;
 
-namespace SPR521_VideoGames
+namespace SPR521_VideoGames.BLL.Dtos.Game
 {
-    public class GameDto
+    public class CreateGameDto
     {
-        public int Id { get; set; }
-        public required string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         public DateTime ReleaseDate { get; set; }
         public string? Description { get; set; }
+        public string? Image { get; set; }
         public string? Genre { get; set; }
         public decimal Price { get; set; }
         public float Rating { get; set; }
-        public string? Developer { get; set; }
+        public int DeveloperId { get; set; }
     }
 }
