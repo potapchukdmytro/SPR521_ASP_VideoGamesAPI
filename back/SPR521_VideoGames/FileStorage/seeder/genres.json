@@ -1,0 +1,62 @@
+[
+    {
+        "Name": "Action"
+    },
+    {
+        "Name": "Adventure"
+    },
+    {
+        "Name": "RPG"
+    },
+    {
+        "Name": "Action RPG"
+    },
+    {
+        "Name": "Open World"
+    },
+    {
+        "Name": "Shooter"
+    },
+    {
+        "Name": "First-Person Shooter"
+    },
+    {
+        "Name": "Third-Person Shooter"
+    },
+    {
+        "Name": "Fantasy"
+    },
+    {
+        "Name": "Dark Fantasy"
+    },
+    {
+        "Name": "Science Fiction"
+    },
+    {
+        "Name": "Stealth"
+    },
+    {
+        "Name": "Strategy"
+    },
+    {
+        "Name": "Card Game"
+    },
+    {
+        "Name": "Simulation"
+    },
+    {
+        "Name": "Survival"
+    },
+    {
+        "Name": "Horror"
+    },
+    {
+        "Name": "Hack and Slash"
+    },
+    {
+        "Name": "Mecha"
+    },
+    {
+        "Name": "Western"
+    }
+]

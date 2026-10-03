@@ -13,6 +13,7 @@ namespace SPR521_VideoGames.DAL
 
         public DbSet<Game> Games { get; set; }
         public DbSet<Developer> Developers { get; set; }
+        public DbSet<Genre> Genres { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -51,9 +52,16 @@ namespace SPR521_VideoGames.DAL
 
                 e.Property(g => g.Image)
                 .HasMaxLength(50);
+            });
 
-                e.Property(g => g.Genre)
-                .HasMaxLength(255);
+            // Genre
+            builder.Entity<Genre>(e =>
+            {
+                e.HasKey(g => g.Id);
+
+                e.Property(g => g.Name)
+                .IsRequired()
+                .HasMaxLength(100);
             });
 
             // Relationships
@@ -63,6 +71,11 @@ namespace SPR521_VideoGames.DAL
                 .HasForeignKey(g => g.DeveloperId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .IsRequired();
+
+            builder.Entity<Game>()
+                .HasMany(g => g.Genres)
+                .WithMany(g => g.Games)
+                .UsingEntity("GameGenres");
         }
     }
 }

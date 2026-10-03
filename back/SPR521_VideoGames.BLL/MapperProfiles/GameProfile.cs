@@ -11,7 +11,8 @@ namespace SPR521_VideoGames.BLL.MapperProfiles
         {
             // Game -> GameDto
             CreateMap<Game, GameDto>()
-                .ForMember(dest => dest.Developer, opt => opt.MapFrom(src => src.Developer!.Name));
+                .ForMember(dest => dest.Developer, opt => opt.MapFrom(src => src.Developer!.Name))
+                .ForMember(dest => dest.Genres, opt => opt.MapFrom(src => src.Genres.Select(g => g.Name)));
 
             // CreateGameDto -> Game
             CreateMap<CreateGameDto, Game>()

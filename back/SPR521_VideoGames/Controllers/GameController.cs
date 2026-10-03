@@ -75,5 +75,19 @@ namespace SPR521_VideoGames.Controllers
             var response = await _gameService.DeleteAsync(id, _imagesFolder, ct);
             return this.GetHttpResponse(response);
         }
+
+        [HttpPatch("add-genre")]
+        public async Task<IActionResult> AddGenreAsync([FromQuery] int gameId, [FromQuery] string genreName, CancellationToken ct = default)
+        {
+            var response = await _gameService.AddGenreAsync(gameId, genreName, ct);
+            return this.GetHttpResponse(response);
+        }
+
+        [HttpPatch("remove-genre")]
+        public async Task<IActionResult> RemoveGenreAsync([FromQuery] int gameId, [FromQuery] string genreName, CancellationToken ct = default)
+        {
+            var response = await _gameService.RemoveGenreAsync(gameId, genreName, ct);
+            return this.GetHttpResponse(response);
+        }
     }
 }

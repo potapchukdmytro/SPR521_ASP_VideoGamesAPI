@@ -1,0 +1,392 @@
+[
+  {
+    "Name": "CD Projekt Red",
+    "Country": "Poland",
+    "Year": 1994,
+    "Description": "Polish video game developer known for story-driven RPG games and the Cyberpunk and The Witcher franchises.",
+    "Games": [
+      {
+        "Name": "The Witcher",
+        "ReleaseDate": "2007-10-26T00:00:00Z",
+        "Description": "Action RPG following the monster hunter Geralt of Rivia.",
+        "Price": 9.99,
+        "Rating": 8.5
+      },
+      {
+        "Name": "The Witcher 2: Assassins of Kings",
+        "ReleaseDate": "2011-05-17T00:00:00Z",
+        "Description": "Geralt becomes involved in political conflicts after the assassination of a king.",
+        "Price": 19.99,
+        "Rating": 8.8
+      },
+      {
+        "Name": "The Witcher 3: Wild Hunt",
+        "ReleaseDate": "2015-05-19T00:00:00Z",
+        "Description": "Geralt searches for Ciri while facing the supernatural Wild Hunt.",
+        "Price": 39.99,
+        "Rating": 9.7
+      },
+      {
+        "Name": "The Witcher 3: Hearts of Stone",
+        "ReleaseDate": "2015-10-13T00:00:00Z",
+        "Description": "Expansion featuring Geralt's mysterious contract with Gaunter O'Dimm.",
+        "Price": 9.99,
+        "Rating": 9.2
+      },
+      {
+        "Name": "The Witcher 3: Blood and Wine",
+        "ReleaseDate": "2016-05-31T00:00:00Z",
+        "Description": "Geralt travels to Toussaint to investigate a series of mysterious murders.",
+        "Price": 19.99,
+        "Rating": 9.6
+      },
+      {
+        "Name": "Cyberpunk 2077",
+        "ReleaseDate": "2020-12-10T00:00:00Z",
+        "Description": "Open-world RPG set in the futuristic metropolis of Night City.",
+        "Price": 59.99,
+        "Rating": 8.8
+      },
+      {
+        "Name": "Cyberpunk 2077: Phantom Liberty",
+        "ReleaseDate": "2023-09-26T00:00:00Z",
+        "Description": "Spy-thriller expansion taking place in the dangerous district of Dogtown.",
+        "Price": 29.99,
+        "Rating": 9.3
+      },
+      {
+        "Name": "Gwent: The Witcher Card Game",
+        "ReleaseDate": "2018-10-23T00:00:00Z",
+        "Description": "Competitive digital card game based on the card game from The Witcher universe.",
+        "Price": 0.0,
+        "Rating": 8.0
+      },
+      {
+        "Name": "Thronebreaker: The Witcher Tales",
+        "ReleaseDate": "2018-10-23T00:00:00Z",
+        "Description": "Story-driven RPG combining exploration and card-based combat.",
+        "Price": 19.99,
+        "Rating": 8.4
+      },
+      {
+        "Name": "The Witcher Adventure Game",
+        "ReleaseDate": "2014-11-27T00:00:00Z",
+        "Description": "Digital adaptation of a board game set in The Witcher universe.",
+        "Price": 9.99,
+        "Rating": 7.2
+      }
+    ]
+  },
+  {
+    "Name": "Rockstar Games",
+    "Country": "United States",
+    "Year": 1998,
+    "Description": "Video game developer and publisher famous for large open-world games such as Grand Theft Auto and Red Dead Redemption.",
+    "Games": [
+      {
+        "Name": "Grand Theft Auto III",
+        "ReleaseDate": "2001-10-23T00:00:00Z",
+        "Description": "Open-world crime game set in Liberty City.",
+        "Price": 19.99,
+        "Rating": 9.1
+      },
+      {
+        "Name": "Grand Theft Auto: Vice City",
+        "ReleaseDate": "2002-10-29T00:00:00Z",
+        "Description": "Crime-focused open-world game set in the 1980s-inspired Vice City.",
+        "Price": 19.99,
+        "Rating": 9.2
+      },
+      {
+        "Name": "Grand Theft Auto: San Andreas",
+        "ReleaseDate": "2004-10-26T00:00:00Z",
+        "Description": "CJ returns to Los Santos and becomes involved in gangs and criminal organizations.",
+        "Price": 19.99,
+        "Rating": 9.5
+      },
+      {
+        "Name": "Bully",
+        "ReleaseDate": "2006-10-17T00:00:00Z",
+        "Description": "Open-world action game set inside the fictional Bullworth Academy.",
+        "Price": 14.99,
+        "Rating": 8.7
+      },
+      {
+        "Name": "Grand Theft Auto IV",
+        "ReleaseDate": "2008-04-29T00:00:00Z",
+        "Description": "Niko Bellic arrives in Liberty City searching for a new life.",
+        "Price": 19.99,
+        "Rating": 9.4
+      },
+      {
+        "Name": "Red Dead Redemption",
+        "ReleaseDate": "2010-05-18T00:00:00Z",
+        "Description": "Western open-world adventure following former outlaw John Marston.",
+        "Price": 49.99,
+        "Rating": 9.4
+      },
+      {
+        "Name": "L.A. Noire",
+        "ReleaseDate": "2011-05-17T00:00:00Z",
+        "Description": "Detective game set in post-war Los Angeles.",
+        "Price": 39.99,
+        "Rating": 8.6
+      },
+      {
+        "Name": "Max Payne 3",
+        "ReleaseDate": "2012-05-15T00:00:00Z",
+        "Description": "Third-person shooter following Max Payne in São Paulo.",
+        "Price": 19.99,
+        "Rating": 8.7
+      },
+      {
+        "Name": "Grand Theft Auto V",
+        "ReleaseDate": "2013-09-17T00:00:00Z",
+        "Description": "Open-world crime game featuring Michael, Franklin and Trevor.",
+        "Price": 29.99,
+        "Rating": 9.6
+      },
+      {
+        "Name": "Red Dead Redemption 2",
+        "ReleaseDate": "2018-10-26T00:00:00Z",
+        "Description": "Western adventure following Arthur Morgan and the Van der Linde gang.",
+        "Price": 59.99,
+        "Rating": 9.8
+      }
+    ]
+  },
+  {
+    "Name": "Bethesda Game Studios",
+    "Country": "United States",
+    "Year": 2001,
+    "Description": "American game developer best known for large-scale open-world RPG franchises including The Elder Scrolls and Fallout.",
+    "Games": [
+      {
+        "Name": "The Elder Scrolls III: Morrowind",
+        "ReleaseDate": "2002-05-01T00:00:00Z",
+        "Description": "Open-world fantasy RPG set on the island of Vvardenfell.",
+        "Price": 14.99,
+        "Rating": 8.9
+      },
+      {
+        "Name": "The Elder Scrolls IV: Oblivion",
+        "ReleaseDate": "2006-03-20T00:00:00Z",
+        "Description": "Fantasy RPG where the player attempts to stop a Daedric invasion.",
+        "Price": 14.99,
+        "Rating": 9.1
+      },
+      {
+        "Name": "Fallout 3",
+        "ReleaseDate": "2008-10-28T00:00:00Z",
+        "Description": "Post-apocalyptic RPG set in the ruins of Washington, D.C.",
+        "Price": 19.99,
+        "Rating": 9.1
+      },
+      {
+        "Name": "The Elder Scrolls V: Skyrim",
+        "ReleaseDate": "2011-11-11T00:00:00Z",
+        "Description": "Open-world fantasy RPG following the Dragonborn.",
+        "Price": 39.99,
+        "Rating": 9.5
+      },
+      {
+        "Name": "Fallout Shelter",
+        "ReleaseDate": "2015-06-14T00:00:00Z",
+        "Description": "Management simulation where players build and operate a Vault.",
+        "Price": 0.0,
+        "Rating": 7.8
+      },
+      {
+        "Name": "Fallout 4",
+        "ReleaseDate": "2015-11-10T00:00:00Z",
+        "Description": "Open-world post-apocalyptic RPG set in the Commonwealth.",
+        "Price": 29.99,
+        "Rating": 8.8
+      },
+      {
+        "Name": "Fallout 76",
+        "ReleaseDate": "2018-11-14T00:00:00Z",
+        "Description": "Online multiplayer RPG set in post-apocalyptic West Virginia.",
+        "Price": 39.99,
+        "Rating": 7.4
+      },
+      {
+        "Name": "The Elder Scrolls V: Skyrim Special Edition",
+        "ReleaseDate": "2016-10-28T00:00:00Z",
+        "Description": "Remastered edition of Skyrim with improved graphics and mod support.",
+        "Price": 39.99,
+        "Rating": 9.2
+      },
+      {
+        "Name": "The Elder Scrolls: Blades",
+        "ReleaseDate": "2020-05-14T00:00:00Z",
+        "Description": "Dungeon-focused RPG designed primarily for mobile platforms.",
+        "Price": 0.0,
+        "Rating": 6.8
+      },
+      {
+        "Name": "Starfield",
+        "ReleaseDate": "2023-09-06T00:00:00Z",
+        "Description": "Science-fiction RPG featuring planetary exploration and space travel.",
+        "Price": 69.99,
+        "Rating": 8.0
+      }
+    ]
+  },
+  {
+    "Name": "Ubisoft Montreal",
+    "Country": "Canada",
+    "Year": 1997,
+    "Description": "Canadian development studio responsible for many major Ubisoft franchises including Assassin's Creed, Far Cry and Watch Dogs.",
+    "Games": [
+      {
+        "Name": "Prince of Persia: The Sands of Time",
+        "ReleaseDate": "2003-11-06T00:00:00Z",
+        "Description": "Action adventure featuring acrobatics and time manipulation.",
+        "Price": 9.99,
+        "Rating": 8.9
+      },
+      {
+        "Name": "Far Cry 2",
+        "ReleaseDate": "2008-10-21T00:00:00Z",
+        "Description": "Open-world first-person shooter set in a fictional African country.",
+        "Price": 9.99,
+        "Rating": 8.1
+      },
+      {
+        "Name": "Assassin's Creed II",
+        "ReleaseDate": "2009-11-17T00:00:00Z",
+        "Description": "Ezio Auditore becomes an Assassin during the Italian Renaissance.",
+        "Price": 19.99,
+        "Rating": 9.2
+      },
+      {
+        "Name": "Assassin's Creed Brotherhood",
+        "ReleaseDate": "2010-11-16T00:00:00Z",
+        "Description": "Ezio establishes an Assassin Brotherhood in Rome.",
+        "Price": 19.99,
+        "Rating": 8.9
+      },
+      {
+        "Name": "Far Cry 3",
+        "ReleaseDate": "2012-11-29T00:00:00Z",
+        "Description": "Open-world shooter featuring Jason Brody and the pirate Vaas Montenegro.",
+        "Price": 19.99,
+        "Rating": 9.1
+      },
+      {
+        "Name": "Watch Dogs",
+        "ReleaseDate": "2014-05-27T00:00:00Z",
+        "Description": "Open-world action game focused on hacking the infrastructure of Chicago.",
+        "Price": 29.99,
+        "Rating": 8.0
+      },
+      {
+        "Name": "Far Cry 4",
+        "ReleaseDate": "2014-11-18T00:00:00Z",
+        "Description": "Open-world FPS set in the fictional Himalayan region of Kyrat.",
+        "Price": 29.99,
+        "Rating": 8.5
+      },
+      {
+        "Name": "Watch Dogs 2",
+        "ReleaseDate": "2016-11-15T00:00:00Z",
+        "Description": "Hacktivist Marcus Holloway fights an advanced surveillance system in San Francisco.",
+        "Price": 39.99,
+        "Rating": 8.4
+      },
+      {
+        "Name": "Far Cry 5",
+        "ReleaseDate": "2018-03-27T00:00:00Z",
+        "Description": "Open-world shooter set in fictional Hope County, Montana.",
+        "Price": 39.99,
+        "Rating": 8.2
+      },
+      {
+        "Name": "Assassin's Creed Valhalla",
+        "ReleaseDate": "2020-11-10T00:00:00Z",
+        "Description": "Viking-themed action RPG following the warrior Eivor.",
+        "Price": 59.99,
+        "Rating": 8.3
+      }
+    ]
+  },
+  {
+    "Name": "FromSoftware",
+    "Country": "Japan",
+    "Year": 1986,
+    "Description": "Japanese developer famous for challenging action RPG games including Dark Souls, Bloodborne, Sekiro and Elden Ring.",
+    "Games": [
+      {
+        "Name": "Demon's Souls",
+        "ReleaseDate": "2009-02-05T00:00:00Z",
+        "Description": "Dark fantasy action RPG known for difficult combat and atmospheric world design.",
+        "Price": 39.99,
+        "Rating": 8.9
+      },
+      {
+        "Name": "Dark Souls",
+        "ReleaseDate": "2011-09-22T00:00:00Z",
+        "Description": "Challenging dark fantasy RPG set in the kingdom of Lordran.",
+        "Price": 39.99,
+        "Rating": 9.3
+      },
+      {
+        "Name": "Dark Souls II",
+        "ReleaseDate": "2014-03-11T00:00:00Z",
+        "Description": "Action RPG where the player explores the kingdom of Drangleic.",
+        "Price": 39.99,
+        "Rating": 8.6
+      },
+      {
+        "Name": "Bloodborne",
+        "ReleaseDate": "2015-03-24T00:00:00Z",
+        "Description": "Gothic action RPG set in the cursed city of Yharnam.",
+        "Price": 19.99,
+        "Rating": 9.4
+      },
+      {
+        "Name": "Dark Souls III",
+        "ReleaseDate": "2016-03-24T00:00:00Z",
+        "Description": "Final main entry in the Dark Souls trilogy.",
+        "Price": 59.99,
+        "Rating": 9.3
+      },
+      {
+        "Name": "Sekiro: Shadows Die Twice",
+        "ReleaseDate": "2019-03-22T00:00:00Z",
+        "Description": "Action adventure following a shinobi searching for his kidnapped lord.",
+        "Price": 59.99,
+        "Rating": 9.2
+      },
+      {
+        "Name": "Elden Ring",
+        "ReleaseDate": "2022-02-25T00:00:00Z",
+        "Description": "Open-world action RPG set in the Lands Between.",
+        "Price": 59.99,
+        "Rating": 9.7
+      },
+      {
+        "Name": "Armored Core VI: Fires of Rubicon",
+        "ReleaseDate": "2023-08-25T00:00:00Z",
+        "Description": "Mecha combat game featuring extensive robot customization.",
+        "Price": 59.99,
+        "Rating": 8.9
+      },
+      {
+        "Name": "Elden Ring: Shadow of the Erdtree",
+        "ReleaseDate": "2024-06-21T00:00:00Z",
+        "Description": "Large expansion for Elden Ring featuring the Land of Shadow.",
+        "Price": 39.99,
+        "Rating": 9.5
+      },
+      {
+        "Name": "Dark Souls Remastered",
+        "ReleaseDate": "2018-05-25T00:00:00Z",
+        "Description": "Remastered version of the original Dark Souls with improved visuals and performance.",
+        "Price": 39.99,
+        "Rating": 9.0
+      }
+    ]
+  }
+]

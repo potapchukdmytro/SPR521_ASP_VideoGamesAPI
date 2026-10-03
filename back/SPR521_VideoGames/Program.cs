@@ -35,10 +35,12 @@ builder.Services.AddAutoMapper(cfg =>
 // Add repositories
 builder.Services.AddScoped<GameRepository>();
 builder.Services.AddScoped<DeveloperRepository>();
+builder.Services.AddScoped<GenreRepository>();
 
 // Add services
 builder.Services.AddScoped<GameService>();
 builder.Services.AddScoped<FileService>();
+builder.Services.AddScoped<GenreService>();
 builder.Services.AddScoped<PaginateCollection>();
 
 // Disable default validation

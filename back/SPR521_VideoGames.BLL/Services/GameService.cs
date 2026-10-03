@@ -15,23 +15,26 @@ namespace SPR521_VideoGames.BLL.Services
     {
         private readonly DeveloperRepository _developerRepository;
         private readonly GameRepository _gameRepository;
+        private readonly GenreRepository _genreRepository;
         private readonly FileService _fileService;
         private readonly PaginateCollection _paginateCollection;
         private readonly IMapper _mapper;
 
-        public GameService(GameRepository gameRepository, IMapper mapper, FileService fileService, DeveloperRepository developerRepository, PaginateCollection paginateCollection)
+        public GameService(GameRepository gameRepository, IMapper mapper, FileService fileService, DeveloperRepository developerRepository, PaginateCollection paginateCollection, GenreRepository genreRepository)
         {
             _gameRepository = gameRepository;
             _mapper = mapper;
             _fileService = fileService;
             _developerRepository = developerRepository;
             _paginateCollection = paginateCollection;
+            _genreRepository = genreRepository;
         }
 
         public async Task<ResponseDto> GetAllAsync(PaginationRequestDto dto, CancellationToken ct = default)
         {
             var query = _gameRepository.Games
                 .Include(g => g.Developer)
+                .Include(g => g.Genres)
                 .OrderBy(g => g.Id);
 
             var result = await _paginateCollection.PaginateAsync(query, dto, ct);
@@ -72,6 +75,12 @@ namespace SPR521_VideoGames.BLL.Services
             {
                 entity.Image = await  _fileService.SaveImageAsync(dto.Image, imagesFolder, ct);
             }
+
+            var genres = await _genreRepository.Genres
+                .Where(g => dto.GenresId.Contains(g.Id))
+                .ToListAsync(ct);
+
+            entity.Genres = genres;
 
             await _gameRepository.CreateAsync(entity, ct);
 
@@ -129,9 +138,49 @@ namespace SPR521_VideoGames.BLL.Services
                 entity.Image = await _fileService.SaveImageAsync(dto.Image, imagesFolder, ct);
             }
 
+
+            // Genres
+            await _gameRepository.LoadGenresAsync(entity, ct);
+
+            var genres = await _genreRepository.Genres
+                .Where(g => dto.GenresId.Contains(g.Id))
+                .ToListAsync(ct);
+
+            entity.Genres = genres;
+
             await _gameRepository.UpdateAsync(entity, ct);
 
             return ResponseDto.Success("Дані про гру оновлено", _mapper.Map<GameDto>(entity));
+        }
+
+        public async Task<ResponseDto> AddGenreAsync(int gameId, string genreName, CancellationToken ct = default)
+        {
+            var game = await _gameRepository.GetByIdAsync(gameId, ct);
+
+            if (game == null)
+            {
+                return ResponseDto.Error($"Гра з id '{gameId}' не знайдена");
+            }
+
+            await _gameRepository.LoadGenresAsync(game, ct);
+            await _gameRepository.AddGenreAsync(game, genreName, ct);
+
+            return ResponseDto.Success("Жанр додано до гри");
+        }
+
+        public async Task<ResponseDto> RemoveGenreAsync(int gameId, string genreName, CancellationToken ct = default)
+        {
+            var game = await _gameRepository.GetByIdAsync(gameId, ct);
+
+            if (game == null)
+            {
+                return ResponseDto.Error($"Гра з id '{gameId}' не знайдена");
+            }
+
+            await _gameRepository.LoadGenresAsync(game, ct);
+            await _gameRepository.RemoveGenreAsync(game, genreName, ct);
+
+            return ResponseDto.Success("Жанр видалено з гри");
         }
     }
 }
