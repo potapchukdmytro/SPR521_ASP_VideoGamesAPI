@@ -99,7 +99,7 @@ app.UseAuthorization();
 app.UseMiddleware<LoggingMiddleware>();
 //app.UseMiddleware<HttpsCheckMiddlware>();
 app.UseMiddleware<TestMiddleware>();
-app.UseMiddleware<SecureMiddleware>();
+//app.UseMiddleware<SecureMiddleware>();
 
 app.MapControllers();
 
