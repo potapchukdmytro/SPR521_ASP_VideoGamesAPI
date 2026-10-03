@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using SPR521_VideoGames.BLL.Dtos;
 using SPR521_VideoGames.BLL.Dtos.Genre;
 using SPR521_VideoGames.DAL.Entities;
@@ -10,12 +11,14 @@ namespace SPR521_VideoGames.BLL.Services
     public class GenreService
     {
         private readonly GenreRepository _genreRepository;
+        private readonly ILogger<GenreService> _logger;
         private readonly IMapper _mapper;
 
-        public GenreService(GenreRepository genreRepository, IMapper mapper)
+        public GenreService(GenreRepository genreRepository, IMapper mapper, ILogger<GenreService> logger)
         {
             _genreRepository = genreRepository;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<ResponseDto> GetAllAsync(CancellationToken ct = default)
@@ -51,6 +54,7 @@ namespace SPR521_VideoGames.BLL.Services
 
             if(entity == null)
             {
+                _logger.LogWarning($"Жанр з id '{dto.Id}' не знайдено");
                 return ResponseDto.Error($"Жанр з id '{dto.Id}' не знайдено");
             }
 

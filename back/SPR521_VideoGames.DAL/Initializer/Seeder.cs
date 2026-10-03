@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using SPR521_VideoGames.DAL.Entities;
 using System.Text.Json;
 
@@ -26,7 +27,7 @@ namespace SPR521_VideoGames.DAL.Initializer
 
             if (!File.Exists(developersPath) || !File.Exists(genresPath))
             {
-                return;
+                throw new Exception("Seeder files not found. Please ensure that 'developers_with_genres.json' and 'genres.json' exist in the 'FileStorage/seeder' directory.");
             }
 
             var jsonGenres = await File.ReadAllTextAsync(genresPath);

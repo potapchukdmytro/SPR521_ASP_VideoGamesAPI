@@ -23,6 +23,10 @@ builder.Services.AddOpenApi();
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     var connectionString = builder.Configuration.GetConnectionString("LocalDb");
+    if(connectionString == null)
+    {
+        throw new Exception("Connection string 'LocalDb' not found in configuration.");
+    }
     options.UseNpgsql(connectionString);
 });
 

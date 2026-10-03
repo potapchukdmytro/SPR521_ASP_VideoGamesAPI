@@ -11,19 +11,22 @@ namespace SPR521_VideoGames.Controllers
     public class GenreController : ControllerBase
     {
         private readonly GenreService _genreService;
+        private readonly ILogger<GenreController> _logger;
         private readonly IValidator<CreateGenreDto> _createGenreValidator;
         private readonly IValidator<UpdateGenreDto> _updateGenreValidator;
 
-        public GenreController(GenreService genreService, IValidator<CreateGenreDto> createGenreValidator, IValidator<UpdateGenreDto> updateGenreValidator)
+        public GenreController(GenreService genreService, IValidator<CreateGenreDto> createGenreValidator, IValidator<UpdateGenreDto> updateGenreValidator, ILogger<GenreController> logger)
         {
             _genreService = genreService;
             _createGenreValidator = createGenreValidator;
             _updateGenreValidator = updateGenreValidator;
+            _logger = logger;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllAsync(CancellationToken ct = default)
         {
+            _logger.LogInformation(12, $"[{DateTime.Now}] Information: Getting all genres.");
             var response = await _genreService.GetAllAsync(ct);
             return this.GetHttpResponse(response);
         }
@@ -31,6 +34,10 @@ namespace SPR521_VideoGames.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetByIdAsync([FromRoute] int id, CancellationToken ct = default)
         {
+            // ip адреса клієнта, який робить запит
+            string ip = HttpContext.Connection.RemoteIpAddress?.ToString();
+            _logger.LogInformation($"[{DateTime.Now}] Information: Getting genre by ID '{id}' from IP '{ip}'.");
+
             var response = await _genreService.GetByIdAsync(id, ct);
             return this.GetHttpResponse(response);
         }
