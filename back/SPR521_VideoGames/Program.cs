@@ -9,6 +9,7 @@ using SPR521_VideoGames.BLL.Validators.Game;
 using SPR521_VideoGames.DAL;
 using SPR521_VideoGames.DAL.Initializer;
 using SPR521_VideoGames.DAL.Repositories;
+using SPR521_VideoGames.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -68,7 +69,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 // Static files
 string storagePath = Path.Combine(builder.Environment.ContentRootPath, "FileStorage");
@@ -91,7 +92,14 @@ app.UseStaticFiles(new StaticFileOptions
     FileProvider = new PhysicalFileProvider(imagesPath)
 });
 
+app.UseAuthentication();
 app.UseAuthorization();
+
+// Custom middleware
+app.UseMiddleware<LoggingMiddleware>();
+//app.UseMiddleware<HttpsCheckMiddlware>();
+app.UseMiddleware<TestMiddleware>();
+app.UseMiddleware<SecureMiddleware>();
 
 app.MapControllers();
 
