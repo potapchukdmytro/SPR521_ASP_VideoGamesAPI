@@ -29,7 +29,15 @@ namespace SPR521_VideoGames.Controllers
                 return this.ValidationResponse(validation);
             }
 
-            return Ok();
+            var response = await _authService.LoginAsync(dto, ct);
+            return this.GetHttpResponse(response);
+        }
+
+        [HttpGet("profile")]
+        public async Task<IActionResult> ProfileAsync([FromQuery] string token, CancellationToken ct = default)
+        {
+            var response = await _authService.ProfileAsync(token, ct);
+            return this.GetHttpResponse(response);
         }
     }
 }
