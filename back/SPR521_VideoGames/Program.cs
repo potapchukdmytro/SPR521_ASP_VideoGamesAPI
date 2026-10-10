@@ -44,6 +44,18 @@ Log.Logger = new LoggerConfiguration()
 
 builder.Host.UseSerilog();
 
+// CORS
+string corsName = "allowAll";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(corsName, cfg =>
+    {
+        cfg.AllowAnyOrigin()
+        .AllowAnyHeader()
+        .AllowAnyMethod();
+    });
+});
+
 // Add automapper
 builder.Services.AddAutoMapper(cfg =>
 {
@@ -112,6 +124,8 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = "/images",
     FileProvider = new PhysicalFileProvider(imagesPath)
 });
+
+app.UseCors(corsName);
 
 app.UseAuthentication();
 app.UseAuthorization();
