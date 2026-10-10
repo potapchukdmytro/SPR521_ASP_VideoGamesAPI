@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SPR521_VideoGames.DAL.Entities;
+using SPR521_VideoGames.DAL.Repositories;
 using System.Text.Json;
 
 namespace SPR521_VideoGames.DAL.Initializer
@@ -13,9 +14,50 @@ namespace SPR521_VideoGames.DAL.Initializer
         {
             using var scope = app.ApplicationServices.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            var userRepository = scope.ServiceProvider.GetRequiredService<UserRepository>();
 
             await context.Database.MigrateAsync();
 
+            await SeedUsersRolesAsync(userRepository);
+            await SeedDevelopersGamesAsync(context);
+        }
+
+        private static async Task SeedUsersRolesAsync(UserRepository userRepository)
+        {
+            if(await userRepository.Users.AnyAsync())
+            {
+                return;
+            }
+
+            var admin = new User
+            {
+                Email = "admin@mail.com",
+                NormalizedEmail = "ADMIN@MAIL.COM",
+                UserName = "admin",
+                NormalizedUserName = "ADMIN",
+                EmailConfirmed = true,
+                FirstName = "John",
+                LastName = "Doe"
+            };
+
+            await userRepository.CreateAsync(admin, "qwerty");
+
+            var user = new User
+            {
+                Email = "user@mail.com",
+                NormalizedEmail = "USER@MAIL.COM",
+                UserName = "user",
+                NormalizedUserName = "USER",
+                EmailConfirmed = true,
+                FirstName = "Mike",
+                LastName = "Thomson"
+            };
+
+            await userRepository.CreateAsync(user, "qwerty");
+        }
+
+        private static async Task SeedDevelopersGamesAsync(AppDbContext context)
+        {
             if (await context.Developers.AnyAsync())
             {
                 return;

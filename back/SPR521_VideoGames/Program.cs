@@ -1,12 +1,15 @@
 using FluentValidation;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Scalar.AspNetCore;
+using Serilog;
 using SPR521_VideoGames.BLL.Services;
 using SPR521_VideoGames.BLL.Tools;
 using SPR521_VideoGames.BLL.Validators.Game;
 using SPR521_VideoGames.DAL;
+using SPR521_VideoGames.DAL.Entities;
 using SPR521_VideoGames.DAL.Initializer;
 using SPR521_VideoGames.DAL.Repositories;
 using SPR521_VideoGames.Middlewares;
@@ -31,6 +34,15 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString);
 });
 
+//  Serilog
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File("logs/.log", rollingInterval: RollingInterval.Hour)
+    .Enrich.FromLogContext()
+    .CreateLogger();
+
+builder.Host.UseSerilog();
+
 // Add automapper
 builder.Services.AddAutoMapper(cfg =>
 {
@@ -41,11 +53,15 @@ builder.Services.AddAutoMapper(cfg =>
 builder.Services.AddScoped<GameRepository>();
 builder.Services.AddScoped<DeveloperRepository>();
 builder.Services.AddScoped<GenreRepository>();
+builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<RoleRepository>();
 
 // Add services
 builder.Services.AddScoped<GameService>();
 builder.Services.AddScoped<FileService>();
 builder.Services.AddScoped<GenreService>();
+builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<PasswordHasher<User>>();
 builder.Services.AddScoped<PaginateCollection>();
 
 // Disable default validation
@@ -96,9 +112,9 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 // Custom middleware
-app.UseMiddleware<LoggingMiddleware>();
+//app.UseMiddleware<LoggingMiddleware>();
 //app.UseMiddleware<HttpsCheckMiddlware>();
-app.UseMiddleware<TestMiddleware>();
+//app.UseMiddleware<TestMiddleware>();
 //app.UseMiddleware<SecureMiddleware>();
 
 app.MapControllers();

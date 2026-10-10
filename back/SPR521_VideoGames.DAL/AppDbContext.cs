@@ -14,6 +14,8 @@ namespace SPR521_VideoGames.DAL
         public DbSet<Game> Games { get; set; }
         public DbSet<Developer> Developers { get; set; }
         public DbSet<Genre> Genres { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Role> Roles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -64,6 +66,57 @@ namespace SPR521_VideoGames.DAL
                 .HasMaxLength(100);
             });
 
+            // User
+            builder.Entity<User>(e =>
+            {
+                e.HasKey(u => u.Id);
+
+                e.Property(u => u.UserName)
+                    .HasMaxLength(50)
+                    .IsRequired();
+
+                e.Property(u => u.NormalizedUserName)
+                    .HasMaxLength(50)
+                    .IsRequired();
+
+                e.Property(u => u.Email)
+                    .HasMaxLength(255)
+                    .IsRequired();
+
+                e.Property(u => u.NormalizedEmail)
+                    .HasMaxLength(255)
+                    .IsRequired();
+
+                e.Property(u => u.FirstName)
+                    .HasMaxLength(100);
+
+                e.Property(u => u.LastName)
+                    .HasMaxLength(100);
+
+                e.Property(u => u.PasswordHash)
+                    .HasMaxLength(150);
+
+                e.Property(u => u.Image)
+                    .HasMaxLength(50);
+
+                e.Property(u => u.Phone)
+                    .HasMaxLength(15);
+            });
+
+            // Role
+            builder.Entity<Role>(e =>
+            {
+                e.HasKey(r => r.Id);
+
+                e.Property(r => r.Name)
+                    .HasMaxLength(50)
+                    .IsRequired();
+
+                e.Property(r => r.NormalizedName)
+                    .HasMaxLength(50)
+                    .IsRequired();
+            });
+
             // Relationships
             builder.Entity<Game>()
                 .HasOne(g => g.Developer)
@@ -76,6 +129,11 @@ namespace SPR521_VideoGames.DAL
                 .HasMany(g => g.Genres)
                 .WithMany(g => g.Games)
                 .UsingEntity("GameGenres");
+
+            builder.Entity<User>()
+                .HasMany(u => u.Roles)
+                .WithMany(r => r.Users)
+                .UsingEntity("UserRoles");
         }
     }
 }
