@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SPR521_VideoGames.BLL.Dtos;
 using SPR521_VideoGames.BLL.Dtos.Auth;
 using SPR521_VideoGames.BLL.Services;
 using SPR521_VideoGames.BLL.Validators.Auth;
@@ -34,8 +35,15 @@ namespace SPR521_VideoGames.Controllers
         }
 
         [HttpGet("profile")]
-        public async Task<IActionResult> ProfileAsync([FromQuery] string token, CancellationToken ct = default)
+        public async Task<IActionResult> ProfileAsync(CancellationToken ct = default)
         {
+            var token = HttpContext.Request.Headers.Authorization.FirstOrDefault();
+
+            if(token == null)
+            {
+                return Unauthorized(ResponseDto.Error("Вкажіть токен"));
+            }
+
             var response = await _authService.ProfileAsync(token, ct);
             return this.GetHttpResponse(response);
         }
