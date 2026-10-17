@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SPR521_VideoGames.BLL.Dtos;
 using SPR521_VideoGames.BLL.Dtos.Auth;
 using SPR521_VideoGames.BLL.Services;
-using SPR521_VideoGames.BLL.Validators.Auth;
 using SPR521_VideoGames.Extensions;
 
 namespace SPR521_VideoGames.Controllers
@@ -52,14 +52,17 @@ namespace SPR521_VideoGames.Controllers
         }
 
         [HttpGet("profile")]
+        [Authorize]
         public async Task<IActionResult> ProfileAsync(CancellationToken ct = default)
         {
-            var token = HttpContext.Request.Headers.Authorization.FirstOrDefault();
+            var authorization = HttpContext.Request.Headers.Authorization.First();
 
-            if(token == null)
+            if (User.Identity == null || !User.Identity.IsAuthenticated || authorization == null)
             {
                 return Unauthorized(ResponseDto.Error("Вкажіть токен"));
             }
+
+            string token = new string(authorization.Skip(7).ToArray());
 
             var response = await _authService.ProfileAsync(token, ct);
             return this.GetHttpResponse(response);

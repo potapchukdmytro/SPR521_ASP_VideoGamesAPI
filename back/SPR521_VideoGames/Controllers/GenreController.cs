@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SPR521_VideoGames.BLL.Dtos.Genre;
 using SPR521_VideoGames.BLL.Services;
@@ -8,6 +9,7 @@ namespace SPR521_VideoGames.Controllers
 {
     [ApiController]
     [Route("api/genre")]
+    //[Authorize(Roles = "admin")]
     public class GenreController : ControllerBase
     {
         private readonly GenreService _genreService;
@@ -24,6 +26,7 @@ namespace SPR521_VideoGames.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAllAsync(CancellationToken ct = default)
         {
             _logger.LogInformation(12, $"[{DateTime.Now}] Information: Getting all genres.");
@@ -32,12 +35,9 @@ namespace SPR521_VideoGames.Controllers
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetByIdAsync([FromRoute] int id, CancellationToken ct = default)
         {
-            // ip адреса клієнта, який робить запит
-            string ip = HttpContext.Connection.RemoteIpAddress?.ToString();
-            _logger.LogInformation($"[{DateTime.Now}] Information: Getting genre by ID '{id}' from IP '{ip}'.");
-
             var response = await _genreService.GetByIdAsync(id, ct);
             return this.GetHttpResponse(response);
         }

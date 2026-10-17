@@ -39,6 +39,18 @@ namespace SPR521_VideoGames.BLL.Services
                 new Claim("userName", user.UserName)
             };
 
+            if(user.Roles.Count > 0)
+            {
+                foreach (var role in user.Roles)
+                {
+                    claims.Add(new Claim("role", role.Name));
+                }
+            }
+            else
+            {
+                claims.Add(new Claim("role", "user"));
+            }
+
             var bytes = Encoding.UTF8.GetBytes(_settings.SecretKey);
             var key = new SymmetricSecurityKey(bytes);
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

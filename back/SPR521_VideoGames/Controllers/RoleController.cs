@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SPR521_VideoGames.BLL.Dtos.Role;
 using SPR521_VideoGames.BLL.Services;
@@ -8,6 +9,7 @@ namespace SPR521_VideoGames.Controllers
 {
     [ApiController]
     [Route("api/role")]
+    //[Authorize(Roles = "admin")]
     public class RoleController : ControllerBase
     {
         private readonly RoleService _roleService;

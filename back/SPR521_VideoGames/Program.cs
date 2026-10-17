@@ -1,19 +1,13 @@
 using FluentValidation;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.FileProviders;
 using Scalar.AspNetCore;
 using Serilog;
-using SPR521_VideoGames.BLL.Services;
 using SPR521_VideoGames.BLL.Settings;
-using SPR521_VideoGames.BLL.Tools;
 using SPR521_VideoGames.BLL.Validators.Game;
 using SPR521_VideoGames.DAL;
-using SPR521_VideoGames.DAL.Entities;
 using SPR521_VideoGames.DAL.Initializer;
-using SPR521_VideoGames.DAL.Repositories;
-using SPR521_VideoGames.Middlewares;
+using SPR521_VideoGames.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,11 +18,14 @@ builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
 builder.Services.AddOpenApi();
 
+// Authentication
+builder.Services.AddJwtAuthentication(builder.Configuration);
+
 // Add dbcontext
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     var connectionString = builder.Configuration.GetConnectionString("LocalDb");
-    if(connectionString == null)
+    if (connectionString == null)
     {
         throw new Exception("Connection string 'LocalDb' not found in configuration.");
     }
@@ -67,24 +64,10 @@ builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSet
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
 
 // Add repositories
-builder.Services.AddScoped<GameRepository>();
-builder.Services.AddScoped<DeveloperRepository>();
-builder.Services.AddScoped<GenreRepository>();
-builder.Services.AddScoped<UserRepository>();
-builder.Services.AddScoped<RoleRepository>();
-builder.Services.AddScoped<UserTokenRepository>();
+builder.Services.AddRepositories();
 
 // Add services
-builder.Services.AddScoped<GameService>();
-builder.Services.AddScoped<FileService>();
-builder.Services.AddScoped<GenreService>();
-builder.Services.AddScoped<AuthService>();
-builder.Services.AddScoped<JwtService>();
-builder.Services.AddScoped<RoleService>();
-builder.Services.AddScoped<UserService>();
-builder.Services.AddScoped<EmailService>();
-builder.Services.AddScoped<PasswordHasher<User>>();
-builder.Services.AddScoped<PaginateCollection>();
+builder.Services.AddServices();
 
 // Disable default validation
 builder.Services.Configure<ApiBehaviorOptions>(options =>
@@ -110,25 +93,7 @@ if (app.Environment.IsDevelopment())
 //app.UseHttpsRedirection();
 
 // Static files
-string storagePath = Path.Combine(builder.Environment.ContentRootPath, "FileStorage");
-
-if(!Directory.Exists(storagePath))
-{
-    Directory.CreateDirectory(storagePath);
-}
-
-string imagesPath = Path.Combine(storagePath, "images");
-
-if (!Directory.Exists(imagesPath))
-{
-    Directory.CreateDirectory(imagesPath);
-}
-
-app.UseStaticFiles(new StaticFileOptions
-{
-    RequestPath = "/images",
-    FileProvider = new PhysicalFileProvider(imagesPath)
-});
+app.AddStaticFiles(app.Environment);
 
 app.UseCors(corsName);
 

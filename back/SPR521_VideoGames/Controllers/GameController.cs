@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SPR521_VideoGames.BLL.Dtos.Game;
 using SPR521_VideoGames.BLL.Dtos.Pagination;
@@ -10,6 +11,7 @@ namespace SPR521_VideoGames.Controllers
 {
     [ApiController]
     [Route("api/game")]
+    //[Authorize(Roles = "admin")]
     public class GameController : ControllerBase
     {
         private readonly GameService _gameService;
@@ -28,6 +30,7 @@ namespace SPR521_VideoGames.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAsync([FromQuery] PaginationRequestDto dto, CancellationToken ct = default)
         {
             var response = await _gameService.GetAllAsync(dto, ct);
@@ -35,6 +38,7 @@ namespace SPR521_VideoGames.Controllers
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetByIdAsync([FromRoute] int id, CancellationToken ct = default)
         {
             var response = await _gameService.GetByIdAsync(id, ct);

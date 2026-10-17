@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SPR521_VideoGames.BLL.Services;
 using SPR521_VideoGames.Extensions;
@@ -17,6 +18,7 @@ namespace SPR521_VideoGames.Controllers
         }
 
         [HttpPatch("add-role")]
+        //[Authorize(Roles = "admin")]
         public async Task<IActionResult> AddToRoleAsync([FromQuery] int userId, [FromQuery] string roleName, CancellationToken ct = default)
         {
             var response = await _userService.AddToRoleAsync(userId, roleName, ct);
@@ -24,6 +26,7 @@ namespace SPR521_VideoGames.Controllers
         }
 
         [HttpPatch("remove-role")]
+        //[Authorize(Roles = "admin")]
         public async Task<IActionResult> RemoveFromRole([FromQuery] int userId, [FromQuery] string roleName, CancellationToken ct = default)
         {
             var response = await _userService.RemoveFromRoleAsync(userId, roleName, ct);
