@@ -235,6 +235,38 @@ namespace SPR521_VideoGames.DAL.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("SPR521_VideoGames.DAL.Entities.UserToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("Expires")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<DateTime>("Updated")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserTokens");
+                });
+
             modelBuilder.Entity("UserRoles", b =>
                 {
                     b.Property<int>("RolesId")
@@ -276,6 +308,17 @@ namespace SPR521_VideoGames.DAL.Migrations
                     b.Navigation("Developer");
                 });
 
+            modelBuilder.Entity("SPR521_VideoGames.DAL.Entities.UserToken", b =>
+                {
+                    b.HasOne("SPR521_VideoGames.DAL.Entities.User", "User")
+                        .WithMany("Tokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("UserRoles", b =>
                 {
                     b.HasOne("SPR521_VideoGames.DAL.Entities.Role", null)
@@ -294,6 +337,11 @@ namespace SPR521_VideoGames.DAL.Migrations
             modelBuilder.Entity("SPR521_VideoGames.DAL.Entities.Developer", b =>
                 {
                     b.Navigation("Games");
+                });
+
+            modelBuilder.Entity("SPR521_VideoGames.DAL.Entities.User", b =>
+                {
+                    b.Navigation("Tokens");
                 });
 #pragma warning restore 612, 618
         }

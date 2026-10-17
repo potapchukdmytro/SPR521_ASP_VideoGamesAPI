@@ -64,6 +64,7 @@ builder.Services.AddAutoMapper(cfg =>
 
 // Settings
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
+builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
 
 // Add repositories
 builder.Services.AddScoped<GameRepository>();
@@ -71,6 +72,7 @@ builder.Services.AddScoped<DeveloperRepository>();
 builder.Services.AddScoped<GenreRepository>();
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<RoleRepository>();
+builder.Services.AddScoped<UserTokenRepository>();
 
 // Add services
 builder.Services.AddScoped<GameService>();
@@ -80,6 +82,7 @@ builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<JwtService>();
 builder.Services.AddScoped<RoleService>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<PasswordHasher<User>>();
 builder.Services.AddScoped<PaginateCollection>();
 

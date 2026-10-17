@@ -18,7 +18,7 @@ namespace SPR521_VideoGames.DAL.Repositories
             return _context.Set<TEntity>();
         }
 
-        public async Task<TEntity?> GetByIdAsync(int id, CancellationToken ct = default)
+        public virtual async Task<TEntity?> GetByIdAsync(int id, CancellationToken ct = default)
         {
             return await _context.Set<TEntity>().FirstOrDefaultAsync(g => g.Id == id, ct);
         }

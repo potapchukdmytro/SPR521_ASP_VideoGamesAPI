@@ -1,9 +1,12 @@
 ﻿using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using SPR521_VideoGames.BLL.Dtos;
 using SPR521_VideoGames.BLL.Settings;
 using SPR521_VideoGames.DAL.Entities;
+using SPR521_VideoGames.DAL.Repositories;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace SPR521_VideoGames.BLL.Services
@@ -11,15 +14,20 @@ namespace SPR521_VideoGames.BLL.Services
     public class JwtService
     {
         private readonly JwtSettings _settings;
+        private readonly UserTokenRepository _userTokenRepository;
+        private readonly UserRepository _userRepository;
 
-        public JwtService(IOptions<JwtSettings> options)
+        public JwtService(IOptions<JwtSettings> options, UserTokenRepository userTokenRepository, UserRepository userRepository)
         {
             _settings = options.Value;
 
-            if(string.IsNullOrEmpty(_settings.SecretKey))
+            if (string.IsNullOrEmpty(_settings.SecretKey))
             {
                 throw new ArgumentNullException("Jwt secret key is null");
             }
+
+            _userTokenRepository = userTokenRepository;
+            _userRepository = userRepository;
         }
 
         public string GenerateAccessToken(User user)
@@ -101,6 +109,65 @@ namespace SPR521_VideoGames.BLL.Services
             bool parseResult = int.TryParse(idValue, out int userId);
 
             return parseResult ? userId : throw new FormatException("UserId incorrect");
+        }
+
+        public string GenerateSecureToken()
+        {
+            var randomBytes = new byte[32];
+
+            using var rnd = RandomNumberGenerator.Create();
+            rnd.GetBytes(randomBytes);
+
+            return Convert.ToBase64String(randomBytes)
+                .Replace("+", "-")
+                .Replace("/", "_")
+                .Replace("=", "");
+        }
+
+        public async Task<string> GenerateEmailConfirmTokenAsync(User user, CancellationToken ct = default)
+        {
+            var secureToken = GenerateSecureToken();
+
+            var token = new UserToken
+            {
+                Token = secureToken,
+                User = user
+            };
+
+            await _userTokenRepository.CreateAsync(token, ct);
+
+            return token.Token;
+        }
+
+        public async Task<ResponseDto> ConfirmEmailAsync(int userId, string token, CancellationToken ct = default)
+        {
+            var user = await _userRepository.GetByIdAsync(userId, ct);
+
+            if(user == null)
+            {
+                return ResponseDto.Error($"Користувач з id '{userId}' не знайдений");
+            }
+
+            var userToken = user.Tokens.FirstOrDefault(ut => ut.Token == token);
+
+            if(userToken == null)
+            {
+                return ResponseDto.Error($"Невалідний токен");
+            }
+
+            if(userToken.Expires < DateTime.UtcNow)
+            {
+                await _userTokenRepository.DeleteAsync(userToken, ct);
+                return ResponseDto.Error($"Невалідний токен");
+            }
+
+            user.EmailConfirmed = true;
+
+            await _userTokenRepository.DeleteAsync(userToken, ct);
+
+            await _userRepository.UpdateAsync(user);
+
+            return ResponseDto.Success("Пошту підтверджено");
         }
     }
 }

@@ -16,6 +16,7 @@ namespace SPR521_VideoGames.DAL
         public DbSet<Genre> Genres { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<UserToken> UserTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -103,6 +104,16 @@ namespace SPR521_VideoGames.DAL
                     .HasMaxLength(15);
             });
 
+            // UserToken
+            builder.Entity<UserToken>(e =>
+            {
+                e.HasKey(ut => ut.Id);
+
+                e.Property(ut => ut.Token)
+                .HasMaxLength(255)
+                .IsRequired();
+            });
+
             // Role
             builder.Entity<Role>(e =>
             {
@@ -134,6 +145,13 @@ namespace SPR521_VideoGames.DAL
                 .HasMany(u => u.Roles)
                 .WithMany(r => r.Users)
                 .UsingEntity("UserRoles");
+
+            builder.Entity<User>()
+                .HasMany(u => u.Tokens)
+                .WithOne(ut => ut.User)
+                .HasForeignKey(ut => ut.UserId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

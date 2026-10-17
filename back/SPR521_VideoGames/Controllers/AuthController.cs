@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
 using SPR521_VideoGames.BLL.Dtos;
 using SPR521_VideoGames.BLL.Dtos.Auth;
 using SPR521_VideoGames.BLL.Services;
@@ -11,13 +12,15 @@ namespace SPR521_VideoGames.Controllers
     [Route("api/auth")]
     public class AuthController : ControllerBase
     {
-        private readonly LoginValidator _loginValidator;
+        private readonly IValidator<LoginDto> _loginValidator;
+        private readonly IValidator<RegisterDto> _registerValidator;
         private readonly AuthService _authService;
 
-        public AuthController(LoginValidator loginValidator, AuthService authService)
+        public AuthController(AuthService authService, IValidator<LoginDto> loginValidator, IValidator<RegisterDto> registerValidator)
         {
-            _loginValidator = loginValidator;
             _authService = authService;
+            _loginValidator = loginValidator;
+            _registerValidator = registerValidator;
         }
 
         [HttpPost("login")]
@@ -31,6 +34,20 @@ namespace SPR521_VideoGames.Controllers
             }
 
             var response = await _authService.LoginAsync(dto, ct);
+            return this.GetHttpResponse(response);
+        }
+
+        [HttpPost("register")]
+        public async Task<IActionResult> RegisterAsync([FromBody] RegisterDto dto, CancellationToken ct = default)
+        {
+            var validation = await _registerValidator.ValidateAsync(dto);
+
+            if (!validation.IsValid)
+            {
+                return this.ValidationResponse(validation);
+            }
+
+            var response = await _authService.RegisterAsync(dto, ct);
             return this.GetHttpResponse(response);
         }
 

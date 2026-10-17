@@ -2,6 +2,7 @@
 using SPR521_VideoGames.BLL.Dtos;
 using SPR521_VideoGames.BLL.Dtos.Auth;
 using SPR521_VideoGames.BLL.Dtos.User;
+using SPR521_VideoGames.DAL.Entities;
 using SPR521_VideoGames.DAL.Repositories;
 
 namespace SPR521_VideoGames.BLL.Services
@@ -10,13 +11,15 @@ namespace SPR521_VideoGames.BLL.Services
     {
         private readonly UserRepository _userRepository;
         private readonly JwtService _jwtService;
+        private readonly EmailService _emailService;
         private readonly IMapper _mapper;
 
-        public AuthService(UserRepository userRepository, JwtService jwtService, IMapper mapper)
+        public AuthService(UserRepository userRepository, JwtService jwtService, IMapper mapper, EmailService emailService)
         {
             _userRepository = userRepository;
             _jwtService = jwtService;
             _mapper = mapper;
+            _emailService = emailService;
         }
 
         public async Task<ResponseDto> LoginAsync(LoginDto dto, CancellationToken ct = default)
@@ -40,6 +43,22 @@ namespace SPR521_VideoGames.BLL.Services
             var token = _jwtService.GenerateAccessToken(user);
 
             return ResponseDto.Success("Успішний вхід", token);
+        }
+
+        public async Task<ResponseDto> RegisterAsync(RegisterDto dto, CancellationToken ct = default)
+        {
+            var user = _mapper.Map<User>(dto);
+
+            await _userRepository.CreateAsync(user, dto.Password, ct);
+            await _userRepository.AddToRoleAsync(user, "user", ct);
+
+            var jwtToken = _jwtService.GenerateAccessToken(user);
+
+            var emailToken = await _jwtService.GenerateEmailConfirmTokenAsync(user, ct);
+
+            await _emailService.SendEmailConfirmMessageAsync(user, emailToken, ct: ct);
+
+            return ResponseDto.Success("Успішна реєстрація", jwtToken);
         }
 
         public async Task<ResponseDto> ProfileAsync(string token, CancellationToken ct = default)

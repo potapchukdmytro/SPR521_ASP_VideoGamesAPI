@@ -20,7 +20,8 @@ namespace SPR521_VideoGames.DAL.Repositories
 
         public IQueryable<User> Users =>
             GetAll()
-            .Include(u => u.Roles);
+            .Include(u => u.Roles)
+            .Include(u => u.Tokens);
 
         public async Task<User?> GetByEmailAsync(string email, CancellationToken ct = default)
         {
@@ -30,6 +31,11 @@ namespace SPR521_VideoGames.DAL.Repositories
         public async Task<User?> GetByUserNameAsync(string userName, CancellationToken ct = default)
         {
             return await Users.FirstOrDefaultAsync(u => u.NormalizedUserName == userName.ToUpper(), ct);
+        }
+
+        public override async Task<User?> GetByIdAsync(int id, CancellationToken ct = default)
+        {
+            return await Users.FirstOrDefaultAsync(u => u.Id == id, ct);
         }
 
         public async Task<bool> IsExistsEmailAsync(string email, CancellationToken ct = default)

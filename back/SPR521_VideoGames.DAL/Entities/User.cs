@@ -14,5 +14,6 @@
         public string? Image { get; set; }
 
         public List<Role> Roles { get; set; } = [];
+        public List<UserToken> Tokens { get; set; } = [];
     }
 }

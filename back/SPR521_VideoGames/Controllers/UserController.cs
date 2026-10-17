@@ -29,5 +29,19 @@ namespace SPR521_VideoGames.Controllers
             var response = await _userService.RemoveFromRoleAsync(userId, roleName, ct);
             return this.GetHttpResponse(response);
         }
+
+        [HttpGet("send-email-confirm-message")]
+        public async Task<IActionResult> SendEmailConfrimMessageAsync([FromQuery] string token, CancellationToken ct = default)
+        {
+            var response = await _userService.SendEmailConfrimMessageAsync(token, ct);
+            return this.GetHttpResponse(response);
+        }
+
+        [HttpGet("confirm-email")]
+        public async Task<IActionResult> ConfirmEmailAsync([FromQuery] int uid, [FromQuery] string token, CancellationToken ct = default)
+        {
+            var response = await _userService.ConfirmEmailAsync(uid, token, ct);
+            return this.GetHttpResponse(response);
+        }
     }
 }
