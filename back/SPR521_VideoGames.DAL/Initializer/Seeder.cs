@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using SPR521_VideoGames.DAL.Entities;
 using SPR521_VideoGames.DAL.Repositories;
 using System.Text.Json;
@@ -15,45 +14,68 @@ namespace SPR521_VideoGames.DAL.Initializer
             using var scope = app.ApplicationServices.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             var userRepository = scope.ServiceProvider.GetRequiredService<UserRepository>();
+            var roleRepository = scope.ServiceProvider.GetRequiredService<RoleRepository>();
 
             await context.Database.MigrateAsync();
 
-            await SeedUsersRolesAsync(userRepository);
+            await SeedUsersRolesAsync(userRepository, roleRepository);
             await SeedDevelopersGamesAsync(context);
         }
 
-        private static async Task SeedUsersRolesAsync(UserRepository userRepository)
+        private static async Task SeedUsersRolesAsync(UserRepository userRepository, RoleRepository roleRepository)
         {
-            if(await userRepository.Users.AnyAsync())
+            if (!await roleRepository.Roles.AnyAsync())
             {
-                return;
+                var adminRole = new Role
+                {
+                    Name = "admin",
+                    NormalizedName = "ADMIN"
+                };
+
+                await roleRepository.CreateAsync(adminRole);
+
+                var userRole = new Role
+                {
+                    Name = "user",
+                    NormalizedName = "USER"
+                };
+
+                await roleRepository.CreateAsync(userRole);
             }
 
-            var admin = new User
+            if (!await userRepository.Users.AnyAsync())
             {
-                Email = "admin@mail.com",
-                NormalizedEmail = "ADMIN@MAIL.COM",
-                UserName = "admin",
-                NormalizedUserName = "ADMIN",
-                EmailConfirmed = true,
-                FirstName = "John",
-                LastName = "Doe"
-            };
 
-            await userRepository.CreateAsync(admin, "qwerty");
 
-            var user = new User
-            {
-                Email = "user@mail.com",
-                NormalizedEmail = "USER@MAIL.COM",
-                UserName = "user",
-                NormalizedUserName = "USER",
-                EmailConfirmed = true,
-                FirstName = "Mike",
-                LastName = "Thomson"
-            };
+                var admin = new User
+                {
+                    Email = "admin@mail.com",
+                    NormalizedEmail = "ADMIN@MAIL.COM",
+                    UserName = "admin",
+                    NormalizedUserName = "ADMIN",
+                    EmailConfirmed = true,
+                    FirstName = "John",
+                    LastName = "Doe"
+                };
 
-            await userRepository.CreateAsync(user, "qwerty");
+                await userRepository.CreateAsync(admin, "qwerty");
+
+                var user = new User
+                {
+                    Email = "user@mail.com",
+                    NormalizedEmail = "USER@MAIL.COM",
+                    UserName = "user",
+                    NormalizedUserName = "USER",
+                    EmailConfirmed = true,
+                    FirstName = "Mike",
+                    LastName = "Thomson"
+                };
+
+                await userRepository.CreateAsync(user, "qwerty");
+
+                await userRepository.AddToRoleAsync(admin, "admin");
+                await userRepository.AddToRoleAsync(user, "user");
+            }
         }
 
         private static async Task SeedDevelopersGamesAsync(AppDbContext context)

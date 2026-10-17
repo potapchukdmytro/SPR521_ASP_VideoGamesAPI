@@ -78,6 +78,8 @@ builder.Services.AddScoped<FileService>();
 builder.Services.AddScoped<GenreService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<JwtService>();
+builder.Services.AddScoped<RoleService>();
+builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<PasswordHasher<User>>();
 builder.Services.AddScoped<PaginateCollection>();
 
