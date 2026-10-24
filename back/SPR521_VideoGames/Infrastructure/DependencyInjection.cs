@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using SPR521_VideoGames.BLL.Services;
 using SPR521_VideoGames.BLL.Tools;
 using SPR521_VideoGames.DAL.Entities;
@@ -58,6 +59,41 @@ namespace SPR521_VideoGames.Infrastructure
                         ?? throw new ArgumentNullException("Jwt sercret key is null")))
                     };
                 });
+
+            return services;
+        }
+
+        public static IServiceCollection AddSwaggerAuthorization(this IServiceCollection services)
+        {
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "GamesShop", Version = "v1" });
+
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "Необхідно мати header Authorization: Bearer jwtToken"
+                });
+
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        Array.Empty<string>()
+                    }
+                });
+            });
 
             return services;
         }
