@@ -55,14 +55,12 @@ namespace SPR521_VideoGames.Controllers
         [Authorize]
         public async Task<IActionResult> ProfileAsync(CancellationToken ct = default)
         {
-            var authorization = HttpContext.Request.Headers.Authorization.First();
+            var token = this.GetJwtToken();
 
-            if (User.Identity == null || !User.Identity.IsAuthenticated || authorization == null)
+            if(token == null)
             {
                 return Unauthorized(ResponseDto.Error("Вкажіть токен"));
             }
-
-            string token = new string(authorization.Skip(7).ToArray());
 
             var response = await _authService.ProfileAsync(token, ct);
             return this.GetHttpResponse(response);

@@ -1,8 +1,6 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
-using Scalar.AspNetCore;
 using Serilog;
 using SPR521_VideoGames.BLL.Settings;
 using SPR521_VideoGames.BLL.Validators.Game;

@@ -48,6 +48,13 @@ namespace SPR521_VideoGames.DAL.Repositories
             return await Users.AnyAsync(u => u.NormalizedUserName == userName.ToUpper(), ct);
         }
 
+        public async Task ChangeEmailAsync(User user, string newEmail, CancellationToken ct = default)
+        {
+            user.Email = newEmail;
+            user.NormalizedEmail = newEmail.ToUpper();
+
+            await UpdateAsync(user, ct);
+        }
         public async Task CreateAsync(User user, string password, CancellationToken ct = default)
         {
             string passwordHash = _passwordHasher.HashPassword(user, password);

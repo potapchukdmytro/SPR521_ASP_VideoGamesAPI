@@ -112,6 +112,11 @@ namespace SPR521_VideoGames.DAL
                 e.Property(ut => ut.Token)
                 .HasMaxLength(255)
                 .IsRequired();
+
+                e.Property(ut => ut.NewEmail)
+                    .HasMaxLength(255);
+
+
             });
 
             // Role

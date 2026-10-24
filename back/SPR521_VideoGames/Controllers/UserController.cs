@@ -1,7 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SPR521_VideoGames.BLL.Dtos;
+using SPR521_VideoGames.BLL.Dtos.User;
 using SPR521_VideoGames.BLL.Services;
+using SPR521_VideoGames.DAL.Entities;
 using SPR521_VideoGames.Extensions;
 
 namespace SPR521_VideoGames.Controllers
@@ -11,10 +15,12 @@ namespace SPR521_VideoGames.Controllers
     public class UserController : ControllerBase
     {
         private readonly UserService _userService;
+        private readonly IValidator<ChangeEmailDto> _changeEmailValidator;
 
-        public UserController(UserService userService)
+        public UserController(UserService userService, IValidator<ChangeEmailDto> changeEmailValidator)
         {
             _userService = userService;
+            _changeEmailValidator = changeEmailValidator;
         }
 
         [HttpPatch("add-role")]
@@ -34,9 +40,17 @@ namespace SPR521_VideoGames.Controllers
         }
 
         [HttpGet("send-email-confirm-message")]
-        public async Task<IActionResult> SendEmailConfrimMessageAsync([FromQuery] string token, CancellationToken ct = default)
+        [Authorize]
+        public async Task<IActionResult> SendEmailConfrimMessageAsync(CancellationToken ct = default)
         {
-            var response = await _userService.SendEmailConfrimMessageAsync(token, ct);
+            var token = this.GetJwtToken();
+
+            if (token == null)
+            {
+                return Unauthorized(ResponseDto.Error("Вкажіть токен"));
+            }
+
+            var response = await _userService.SendEmailConfrimMessageAsync(token, ct: ct);
             return this.GetHttpResponse(response);
         }
 
@@ -44,6 +58,28 @@ namespace SPR521_VideoGames.Controllers
         public async Task<IActionResult> ConfirmEmailAsync([FromQuery] int uid, [FromQuery] string token, CancellationToken ct = default)
         {
             var response = await _userService.ConfirmEmailAsync(uid, token, ct);
+            return this.GetHttpResponse(response);
+        }
+
+        [HttpPatch("change-email")]
+        [Authorize]
+        public async Task<IActionResult> ChangeEmailAsync([FromBody] ChangeEmailDto dto, CancellationToken ct = default)
+        {
+            var validation = await _changeEmailValidator.ValidateAsync(dto, ct);
+
+            if(!validation.IsValid)
+            {
+                return this.ValidationResponse(validation);
+            }
+
+            var token = this.GetJwtToken();
+
+            if (token == null)
+            {
+                return Unauthorized(ResponseDto.Error("Вкажіть токен"));
+            }
+
+            var response = await _userService.SendEmailConfrimMessageAsync(token, dto, TokenType.ChangeEmail, ct: ct);
             return this.GetHttpResponse(response);
         }
     }

@@ -54,7 +54,7 @@ namespace SPR521_VideoGames.BLL.Services
 
             var jwtToken = _jwtService.GenerateAccessToken(user);
 
-            var emailToken = await _jwtService.GenerateEmailConfirmTokenAsync(user, ct);
+            var emailToken = await _jwtService.GenerateEmailConfirmTokenAsync(user, ct: ct);
 
             await _emailService.SendEmailConfirmMessageAsync(user, emailToken, ct: ct);
 
