@@ -1,12 +1,14 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Quartz;
 using Serilog;
 using SPR521_VideoGames.BLL.Settings;
 using SPR521_VideoGames.BLL.Validators.Game;
 using SPR521_VideoGames.DAL;
 using SPR521_VideoGames.DAL.Initializer;
 using SPR521_VideoGames.Infrastructure;
+using SPR521_VideoGames.Jobs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,11 +35,20 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 //  Serilog
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
-    .WriteTo.File("logs/.log", rollingInterval: RollingInterval.Hour)
+    .WriteTo.File("logs/.log", rollingInterval: RollingInterval.Minute)
     .Enrich.FromLogContext()
     .CreateLogger();
 
 builder.Host.UseSerilog();
+
+// Add quartz
+builder.Services.AddJobs(
+    (typeof(ConsoleJob), "0 0 * * * ?"),
+    (typeof(EmailSendJob), "0 0 0 1 1 ?"),
+    (typeof(ClearLogsJob), "0 * * * * ?")
+    );
+
+builder.Services.AddQuartzHostedService(option => option.WaitForJobsToComplete = true); 
 
 // CORS
 string corsName = "allowAll";

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Quartz;
 using SPR521_VideoGames.BLL.Services;
 using SPR521_VideoGames.BLL.Tools;
 using SPR521_VideoGames.DAL.Entities;
@@ -36,6 +37,25 @@ namespace SPR521_VideoGames.Infrastructure
             services.AddScoped<EmailService>();
             services.AddScoped<PasswordHasher<User>>();
             services.AddScoped<PaginateCollection>();
+
+            return services;
+        }
+
+        public static IServiceCollection AddJobs(this IServiceCollection services, params (Type type, string cronExpression)[] jobs)
+        {
+            services.AddQuartz(q =>
+            {
+                foreach (var job in jobs)
+                {
+                    var jobKey = new JobKey(job.type.Name);
+                    q.AddJob(job.type, jobKey);
+
+                    q.AddTrigger(opt => opt
+                        .ForJob(jobKey)
+                        .WithIdentity($"{job.type.Name}-trigger")
+                        .WithCronSchedule(job.cronExpression));
+                }
+            });
 
             return services;
         }

@@ -12,6 +12,7 @@
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public string? Image { get; set; }
+        public bool IsSubscribe { get; set; } = false;
 
         public List<Role> Roles { get; set; } = [];
         public List<UserToken> Tokens { get; set; } = [];

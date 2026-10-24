@@ -19,6 +19,21 @@ namespace SPR521_VideoGames.BLL.Services
             _smtpClient.EnableSsl = true;
         }
 
+        public async Task SendEmailAsync(IEnumerable<string> to, string subject, string htmlBody, CancellationToken ct = default)
+        {
+            var message = new MailMessage();
+            message.Subject = subject;
+            message.From = new MailAddress(_smtpSettings.Email);
+            message.Body = htmlBody;
+            message.IsBodyHtml = true;
+            foreach (var userEmail in to)
+            {
+                message.To.Add(userEmail);
+            }
+
+            await _smtpClient.SendMailAsync(message, ct);
+        }
+
         public async Task SendEmailChangeMessageAsync(User user, string email, string token, string callBackUrl = "https://localhost:5000/api/user/confirm-email", CancellationToken ct = default)
         {
             string url = callBackUrl += $"?uid={user.Id}&token={token}";
